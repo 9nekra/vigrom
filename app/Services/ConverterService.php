@@ -25,9 +25,9 @@ class ConverterService
             return bcmul(62, $amount, 4);
         }
         if ($formCurrency === 'RUB' && $toCurrency === 'USD') {
-            return bcdiv($amount, 63, 4);
+            return bcdiv($amount, 62, 4);
         }
 
-        throw new \Exception('Неверная операция преобразовнаия');
+        throw new \Exception('Неверная операция преобразования');
     }
 }

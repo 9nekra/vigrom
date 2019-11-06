@@ -13,13 +13,15 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 class WalletController extends Controller
 {
     /**
+     * Изменение баланса кошелька пользователя
+     *
      * @param Request $request
      *
      * @throws \Throwable
      */
     public function changeBalance(Request $request)
     {
-
+        // Валидация запроса
         $params = $this->validate($request, [
             'wallet_id'        => 'required',
             'transaction_type' => ['required', Rule::in(['debit', 'credit'])],
@@ -27,6 +29,7 @@ class WalletController extends Controller
             'currency'         => ['required', Rule::in(['RUB', 'USD'])],
         ]);
 
+        // Изменение баланаса, и его получение будем осуществлять в пределать одной транзакции
         DB::transaction(function () use ($params) {
 
             // Блокируем от изменения другими пользователями
@@ -34,6 +37,8 @@ class WalletController extends Controller
 
             // Получаем последние данные
             $wallet = Wallet::findOrFail($params['wallet_id']);
+
+            // Определяем сумму транзакции, в валюте кошелька
             $amount = $params['amount'];
             if ($wallet->currency !== $params['currency']) {
                 $amount = (new ConverterService())->convert($amount, $params['currency'], $wallet->currency);
@@ -59,6 +64,8 @@ class WalletController extends Controller
     }
 
     /**
+     * Получение баланса кошелька пользователя
+     *
      * @param Request $request
      *
      * @return array
