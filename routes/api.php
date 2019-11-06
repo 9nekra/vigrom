@@ -16,3 +16,6 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/wallets/change_balance', 'Api\WalletController@changeBalance');
+Route::get('/wallets/get_balance', 'Api\WalletController@getBalance');
