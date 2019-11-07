@@ -17,6 +17,7 @@ class WalletController extends Controller
      *
      * @param Request $request
      *
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Throwable
      */
     public function changeBalance(Request $request)
@@ -33,7 +34,7 @@ class WalletController extends Controller
         DB::transaction(function () use ($params) {
 
             // Блокируем от изменения другими пользователями
-            Wallet::where('id', '=', $params['wallet_id'])->lockForUpdate();
+            Wallet::where('id', '=', $params['wallet_id'])->lockForUpdate()->get();
 
             // Получаем последние данные
             $wallet = Wallet::findOrFail($params['wallet_id']);
@@ -61,6 +62,8 @@ class WalletController extends Controller
                     break;
             }
         });
+
+        return response()->json(['status' => 'ok']);
     }
 
     /**
@@ -68,7 +71,7 @@ class WalletController extends Controller
      *
      * @param Request $request
      *
-     * @return array
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function getBalance(Request $request)
@@ -78,6 +81,24 @@ class WalletController extends Controller
         ]);
         $wallet = Wallet::findOrFail($params['wallet_id']);
 
-        return ['balance' => $wallet->balance];
+        return response()->json(['balance' => $wallet->balance]);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function createWallet(Request $request)
+    {
+        $params            = $this->validate($request, [
+            'currency' => ['required', Rule::in(['RUB', 'USD'])],
+        ]);
+        $params['balance'] = 0;
+
+        $wallet = Wallet::Create($params);
+
+        return response()->json($wallet);
     }
 }

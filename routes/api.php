@@ -17,5 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/wallets/change_balance', 'Api\WalletController@changeBalance');
+Route::post('/wallets/create_wallet', 'Api\WalletController@createWallet');
 Route::get('/wallets/get_balance', 'Api\WalletController@getBalance');
+Route::post('/wallets/change_balance', 'Api\WalletController@changeBalance');
+

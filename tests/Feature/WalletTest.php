@@ -190,6 +190,16 @@ class WalletTest extends TestCase
     }
 
     /**
+     * Возможность создавать новые кошельки по API
+     */
+    public function testCreateWallet()
+    {
+        $response = $this->json('post', '/api/wallets/create_wallet', ['currency' => 'RUB'])
+                         ->assertOk()
+                         ->assertJsonStructure(['id']);
+    }
+
+    /**
      * Проверка равенства с использование bccomp
      *
      * @param        $expected
