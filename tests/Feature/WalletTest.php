@@ -194,9 +194,9 @@ class WalletTest extends TestCase
      */
     public function testCreateWallet()
     {
-        $response = $this->json('post', '/api/wallets/create_wallet', ['currency' => 'RUB'])
-                         ->assertOk()
-                         ->assertJsonStructure(['id']);
+        $this->json('post', '/api/wallets/create_wallet', ['currency' => 'RUB'])
+             ->assertOk()
+             ->assertJsonStructure(['id']);
     }
 
     /**
